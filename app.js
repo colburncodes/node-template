@@ -10,8 +10,11 @@ const { PORT = 3001 } = process.env;
 
 mongoose.connect("mongodb://localhost:27017/test_db");
 
+const routes = require("./api/routes/index");
+
 app.use(express.json());
 app.use(cors());
+app.use("/", routes);
 
 app.listen(PORT, (err) => {
   if (err) {
