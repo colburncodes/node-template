@@ -1,8 +1,9 @@
+const bcrypt = require("bcryptjs");
 const User = require("../../models/user");
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch((error) => {
       next(error);
     });
@@ -11,26 +12,27 @@ const getUsers = (req, res, next) => {
 const getUser = async (req, res, next) => {
   const { userId } = req.params;
 
-  const doesUserExist = await User.exists(userId);
-
-  if (!doesUserExist) {
-    res.status(404).send({
-      message: "User Not Found",
-    });
-  }
   User.findById(userId)
-    .orFail()
-    .then((user) => res.status(200).send(user))
-    .catch((error) => {
-      next(error);
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: "Not Found!" });
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res.status(400).send({ message: "Invalid user id" });
+      } else {
+        next(err);
+      }
     });
 };
 
 const createUser = (req, res, next) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .orFail()
+  const { email, password } = req.body;
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ email, hash }))
     .then((user) => {
       res.status(200).send({ data: user });
     })
