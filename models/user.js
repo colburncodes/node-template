@@ -6,19 +6,19 @@ const isEmail = require("validator/lib/isEmail");
 const userSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: false,
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
-    required: true,
+    required: false,
     minlength: 2,
     maxlength: 30,
   },
   avatar: {
     type: String,
-    required: true,
+    required: false,
     validate: {
       validator(value) {
         return validator.isURL(value);
