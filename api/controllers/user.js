@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../utils/config");
 const User = require("../../models/user");
+const Status = require("../../utils/error");
 
 const login = (req, res) => {
   const { email, password } = req.body;
@@ -16,7 +17,7 @@ const login = (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
+      res.status(Status.Forbidden).send({ message: err.message });
     });
 };
 
@@ -34,13 +35,13 @@ const getUser = async (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: "Not Found!" });
+        res.status(Status.NotFound).send({ message: "Not Found!" });
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(400).send({ message: "Invalid user id" });
+        res.status(Status.NotFound).send({ message: "Invalid user id" });
       } else {
         next(err);
       }
@@ -53,7 +54,7 @@ const createUser = (req, res, next) => {
     .hash(password, 10)
     .then((hash) => User.create({ email, password: hash }))
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.status(Status.Created).send({ data: user });
     })
     .catch((error) => {
       next(error);
@@ -66,7 +67,7 @@ const updateUser = (req, res, next) => {
 
   User.findByIdAndUpdate(userId, { $set: { name, avatar, about } })
     .orFail()
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(Status.Ok).send({ data: user }))
     .catch((error) => {
       next(error);
     });
