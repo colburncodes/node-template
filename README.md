@@ -4,8 +4,6 @@ It contains general concepts, you can customize it according to your needs.
 
 A boilerplate/starter project for quickly building RESTful APIs using Node.js, Express, and Mongoose.
 
-# NODE_TEMPLATE: BACKEND
-
 ## Badges
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
