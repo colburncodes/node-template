@@ -14,7 +14,17 @@ const routes = require("./api/routes/index");
 
 app.use(express.json());
 app.use(cors());
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: "646d73393e7dae2bf48ce7d8",
+  };
+  next();
+});
+
 app.use("/", routes);
+
+
 
 app.listen(PORT, (err) => {
   if (err) {

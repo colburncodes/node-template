@@ -49,12 +49,19 @@ const getUser = async (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const { email, password } = req.body;
+  const { name, email, password, avatar } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({ email, password: hash }))
+    .then((hash) => User.create({ name, email, password: hash, avatar }))
     .then((user) => {
-      res.status(Status.Created).send({ data: user });
+      res
+        .status(Status.Created)
+        .send({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          avatar: user.avatar,
+        });
     })
     .catch((error) => {
       next(error);
