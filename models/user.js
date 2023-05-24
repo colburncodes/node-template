@@ -40,13 +40,26 @@ const userSchema = mongoose.Schema({
     required: true,
     minlength: 8,
   },
+  vehicle: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+  rate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+  route: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(
   email,
   password
 ) {
-  return this.findOne({ email }) // this — the User model
+  return this.findOne({ email })
+    .select("+password") // this — the User model
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error("Incorrect email or password"));
